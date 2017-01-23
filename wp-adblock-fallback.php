@@ -26,6 +26,7 @@ function register_data_tables() {
   
   $alternatives_table_sql = "CREATE TABLE $alternatives_table_name (
                               id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+															alias VARCHAR(1000) NOT NULL,
                               banner VARCHAR(1000) NOT NULL,
                               src VARCHAR(1000) NOT NULL,
                               width int NOT NULL,

@@ -39,6 +39,7 @@
                   <table class="table">
                     <tr>
                       <th>Banner</th>
+                      <th>Alias</th>
                       <th>Link</th>
                       <th>Width</th>
                       <th>Height</th>
@@ -47,12 +48,13 @@
                     </tr>
                     <?php
                       $sql = "SELECT * FROM ".$wpdb->prefix."alternative_ads";
-                      $rows =  $wpdb->get_results( $sql );
+                      $rows_banners =  $wpdb->get_results( $sql );
 
-                      foreach($rows as $row) {
+                      foreach($rows_banners as $row) {
                         $url = plugins_url( 'wp-adblock-fallback/banners/'.$row->banner );
                         echo "<tr>";
                           echo "<td><img src='$url' width='$row->width' heigth='$row->height'  /></td>";
+                          echo "<td>$row->alias</td>";
                           echo "<td>$row->src</td>";
                           echo "<td>$row->width</td>";
                           echo "<td>$row->height</td>";
@@ -66,22 +68,22 @@
               </div>
             </div>
             <div role="tabpanel" class="tab-pane" id="profile">
-               <br/><br/>
-               <i>Save your ad scripts here</i>
-               <br/><br/>
-               <button id="show-new-add-unit" class="btn btn-primary" data-toggle="modal" data-target="#AdLoaderModal">Create Ad Script</button>
-               <hr/>
-               <table class="table">
-                 <tr>
+              <br/><br/>
+              <i>Save your ad scripts here</i>
+              <br/><br/>
+              <button id="show-new-add-unit" class="btn btn-primary" data-toggle="modal" data-target="#AdLoaderModal">Create Ad Script</button>
+              <hr/>
+              <table class="table">
+                <tr>
                   <th>Script Name</th>
                   <th>View</th>
-                   <th>Edit</th>
+                  <th>Edit</th>
                   <th>Delete</th>
-                 </tr>
-                 <?php
+                </tr>
+                <?php
                     $sql = "SELECT * FROM ".$wpdb->prefix."ad_loaders";
-                    $rows =  $wpdb->get_results( $sql );
-                    foreach($rows as $row) {
+                    $rows_loaders =  $wpdb->get_results( $sql );
+                    foreach($rows_loaders as $row) {
                       echo "<tr>";
                         echo "<td>$row->name</td>";
                         echo "<td>$row->script</td>";
@@ -94,6 +96,39 @@
             </div>
             <div role="tabpanel" class="tab-pane" id="assign">
               <h3>Assign Fallback</h3>
+              <i>Assign a fallback rule</i><br/><br/>
+              <form method="POST" action="<?php echo plugins_url( 'admin/backend.php', dirname(__FILE__) ); ?>">
+                <input type="hidden" name="action" value="new_fallback"  />
+                <table>
+                  <tr>
+                    <td>Loader script: &nbsp;&nbsp;</td>
+                    <td>
+                      <select name="loader_id" class="form-control">
+                      <option value="">--SELECT ONE--</option>                
+                      <?php
+                        foreach($rows_loaders as $loader) {
+                          echo "<option value='$loader->id'>$loader->name</option>";
+                        }
+                      ?>
+                    </select>
+                    </td>
+                    <td> &nbsp;&nbsp;will fallback to banner:&nbsp;&nbsp; </td>
+                    <td>
+                      <select name="banner_id" class="form-control">
+                      <option value="">--SELECT ONE--</option>                
+                      <?php
+                        foreach($rows_banners as $banner) {
+                          echo "<option value='$banner->id'>$banner->alias</option>";
+                        }
+                      ?>
+                    </select>
+                    </td>
+                    <td>
+                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button class="btn btn-primary" id="save-fallback-btn">Save Fallback</button>
+                    </td>
+                  </tr>
+                </table>
+              </form>
             </div>
           </div>
         </div>
@@ -102,69 +137,73 @@
   </div>
 
 
-<!-- Modal -->
-<div class="modal fade" id="adUnitModal" tabindex="-1" role="dialog" aria-labelledby="adUnitModalLabel">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="adUnitModalLabel">New Ad Unit</h4>
-      </div>
-      <div class="modal-body">
-        <form method="POST" enctype="multipart/form-data" action="<?php echo plugins_url( 'admin/backend.php', dirname(__FILE__) ); ?>">
-          <input type="hidden" name="action" value="new_banner" />
-          <div class="form-group">
-            <label>Banner Link</label>
-            <input type="text" class="form-control" name="banner_link" />
-          </div>
-          <div class="form-group">
-            <label>Banner</label>
-            <input type="file" class="form-control" name="banner_file" />
-          </div>
-          <div class="form-group">
-            <label>Width</label>
-            <input type="number" class="form-control" name="banner_width" />
-          </div>
-          <div class="form-group">
-            <label>Height</label>
-            <input type="number" class="form-control" name="banner_height" />
-          </div>
-          <button type="submit" class="btn btn-primary">Save changes</button>
-        </form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-
-<!-- Modal -->
-<div class="modal fade" id="AdLoaderModal" tabindex="-1" role="dialog" aria-labelledby="AdLoaderModalLabel">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="AdLoaderModalLabel">New Ad Loader</h4>
-      </div>
-      <div class="modal-body">
-        <form method="POST" action="<?php echo plugins_url( 'admin/backend.php', dirname(__FILE__) ); ?>">
-          <input type="hidden" name="action" value="new_script" />
-          <div class="form-group">
-            <label>Script Name</label>
-            <input type="text" name="name" class="form-control" />
-          </div>
-          <div class="form-group">
-            <label>Ad Script</label>
-            <textarea class="form-control" rows="10" name="script"></textarea>
-          </div>
-          <button type="submit" class="btn btn-primary">Save changes</button>
-        </form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+  <!-- Modal -->
+  <div class="modal fade" id="adUnitModal" tabindex="-1" role="dialog" aria-labelledby="adUnitModalLabel">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="adUnitModalLabel">New Ad Unit</h4>
+        </div>
+        <div class="modal-body">
+          <form method="POST" enctype="multipart/form-data" action="<?php echo plugins_url( 'admin/backend.php', dirname(__FILE__) ); ?>">
+            <input type="hidden" name="action" value="new_banner" />
+            <div class="form-group">
+              <label>Banner Alias</label>
+              <input type="text" class="form-control" name="banner_alias" />
+            </div>
+            <div class="form-group">
+              <label>Banner Link</label>
+              <input type="text" class="form-control" name="banner_link" />
+            </div>
+            <div class="form-group">
+              <label>Banner</label>
+              <input type="file" class="form-control" name="banner_file" />
+            </div>
+            <div class="form-group">
+              <label>Width</label>
+              <input type="number" class="form-control" name="banner_width" />
+            </div>
+            <div class="form-group">
+              <label>Height</label>
+              <input type="number" class="form-control" name="banner_height" />
+            </div>
+            <button type="submit" class="btn btn-primary">Save changes</button>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
       </div>
     </div>
   </div>
-</div>
+
+
+  <!-- Modal -->
+  <div class="modal fade" id="AdLoaderModal" tabindex="-1" role="dialog" aria-labelledby="AdLoaderModalLabel">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="AdLoaderModalLabel">New Ad Loader</h4>
+        </div>
+        <div class="modal-body">
+          <form method="POST" action="<?php echo plugins_url( 'admin/backend.php', dirname(__FILE__) ); ?>">
+            <input type="hidden" name="action" value="new_script" />
+            <div class="form-group">
+              <label>Script Name</label>
+              <input type="text" name="name" class="form-control" />
+            </div>
+            <div class="form-group">
+              <label>Ad Script</label>
+              <textarea class="form-control" rows="10" name="script"></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Save changes</button>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>

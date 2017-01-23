@@ -12,6 +12,9 @@
       case "new_script":
         create_new_script();
         break;
+			case "new_fallback":
+				create_new_fallback();
+				break;
     }
     header("Location: /wp-admin/admin.php?page=wp-adblock-fallback");
   }
@@ -25,6 +28,7 @@
     $banner_link = $_POST['banner_link'];
     $banner_width = $_POST['banner_width'];
     $banner_height = $_POST['banner_height'];
+		$banner_alias = $_POST['banner_alias'];
    
     $fuh = new FileUploadHelper();
     $dir = dirname(__FILE__)."/../banners";
@@ -35,6 +39,7 @@
 				$alternatives_table_name,
 				array(
 					"banner" => $file,
+					"alias" => $banner_alias,
 					"src" => $banner_link,
           "width" => $banner_width,
           "height" => $banner_height
@@ -60,5 +65,22 @@
 				)
 		);
   }
+
+	function create_new_fallback() {
+		require_once($_SERVER['DOCUMENT_ROOT']."/wp-config.php");
+  	global $wpdb;
+		
+		$banner_id = $_POST['banner_id'];
+		$loader_id = $_POST['loader_id'];
+		$fallback_table = $wpdb->prefix."ad_fallbacks";
+		
+		$wpdb->insert(
+				$fallback_table,
+				array(
+					"script" => $loader_id,
+					"banner" => $banner_id,
+				)
+		);
+	}
 
 ?>
