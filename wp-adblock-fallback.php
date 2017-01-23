@@ -22,6 +22,7 @@ function register_data_tables() {
   
   $alternatives_table_name = $wpdb->prefix."alternative_ads";
   $js_adscript_loaders_table_name = $wpdb->prefix."ad_loaders";
+	$wp_fallbacks_table = $wpdb->prefix."ad_fallbacks";
   
   $alternatives_table_sql = "CREATE TABLE $alternatives_table_name (
                               id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -36,13 +37,18 @@ function register_data_tables() {
                                 name VARCHAR(20) NOT NULL,
                                 script VARCHAR(10000) NOT NULL
                               );";
+	
+	$wp_fallbacks_sql = "CREATE TABLE $wp_fallbacks_table (
+												id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+												script INT NOT NULL,
+												banner INT NOT NULL
+											)";
   
   require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
   dbDelta( $alternatives_table_sql );
   dbDelta( $js_adscript_loaders_sql );
+	dbDelta( $wp_fallbacks_sql );
   add_option( 'wp_adblock_fallback_version', $wp_adblock_fallback_version );
-  
-  echo $js_adscript_loaders_sql;
 }
 register_activation_hook( __FILE__, 'register_data_tables' );
 

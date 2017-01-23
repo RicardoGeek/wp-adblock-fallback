@@ -23,6 +23,7 @@
           <ul class="nav nav-tabs" role="tablist">
             <li role="presentation" class="active"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">Custom Ad Units</a></li>
             <li role="presentation"><a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">Ad Network Loaders</a></li>
+            <li role="presentation"><a href="#assign" aria-controls="assign" role="tab" data-toggle="tab">Assign Fallback</a></li>
           </ul>
 
           <!-- Tab panes -->
@@ -31,10 +32,36 @@
               <div class="row">
                 <div class="col-md-12">
                   <br/><br/>
-                  <i>Add units will rotate randomly according to size and placement</i>
+                  <i>Ad units will rotate randomly according to size and placement</i>
                   <br/><br/>
                   <button id="show-new-add-unit" class="btn btn-primary" data-toggle="modal" data-target="#adUnitModal">Create Ad Unit</button>
                   <hr/>
+                  <table class="table">
+                    <tr>
+                      <th>Banner</th>
+                      <th>Link</th>
+                      <th>Width</th>
+                      <th>Height</th>
+                      <th>Edit</th>
+                      <tH>Delete</tH>
+                    </tr>
+                    <?php
+                      $sql = "SELECT * FROM ".$wpdb->prefix."alternative_ads";
+                      $rows =  $wpdb->get_results( $sql );
+
+                      foreach($rows as $row) {
+                        $url = plugins_url( 'wp-adblock-fallback/banners/'.$row->banner );
+                        echo "<tr>";
+                          echo "<td><img src='$url' width='$row->width' heigth='$row->height'  /></td>";
+                          echo "<td>$row->src</td>";
+                          echo "<td>$row->width</td>";
+                          echo "<td>$row->height</td>";
+                          echo "<td><a data-id='$row->id' class='edit-alt-ad'>Edit</a></td>";
+                          echo "<td><a data-id='$row->id' class='delete-alt-ad'>Delete</a></td>";
+                        echo "</tr>";
+                      }
+                    ?>
+                  </table>
                 </div>
               </div>
             </div>
@@ -44,7 +71,29 @@
                <br/><br/>
                <button id="show-new-add-unit" class="btn btn-primary" data-toggle="modal" data-target="#AdLoaderModal">Create Ad Script</button>
                <hr/>
-               
+               <table class="table">
+                 <tr>
+                  <th>Script Name</th>
+                  <th>View</th>
+                   <th>Edit</th>
+                  <th>Delete</th>
+                 </tr>
+                 <?php
+                    $sql = "SELECT * FROM ".$wpdb->prefix."ad_loaders";
+                    $rows =  $wpdb->get_results( $sql );
+                    foreach($rows as $row) {
+                      echo "<tr>";
+                        echo "<td>$row->name</td>";
+                        echo "<td>$row->script</td>";
+                        echo "<td><a data-id='$row->id' class='edit-ad-loader'>Edit</a></td>";
+                        echo "<td><a data-id='$row->id' class='delete-ad-loader'>Delete</a></td>";
+                      echo "</tr>";
+                    }
+                 ?>
+              </table>
+            </div>
+            <div role="tabpanel" class="tab-pane" id="assign">
+              <h3>Assign Fallback</h3>
             </div>
           </div>
         </div>
