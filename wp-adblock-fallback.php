@@ -20,12 +20,12 @@ $wp_adblock_fallback_version = 1.1;
 function register_data_tables() {
   global $wpdb;
   global $wp_adblock_fallback_version;
-  
+
   $ad_table_name = $wpdb->prefix."wp_ad";
   $country_table_name = $wpdb->prefix."ad_country";
 	$click_table_name = $wpdb->prefix."click";
   $impression_table_name = $wpdb->prefix."impression";
-  
+
   $ad_table_sql = "CREATE TABLE $ad_table_name (
                               `id` INT NOT NULL AUTO_INCREMENT,
                               `banner` VARCHAR(500) NOT NULL,
@@ -33,17 +33,19 @@ function register_data_tables() {
                               `size` VARCHAR(45) NOT NULL,
                               `countryId` VARCHAR(45) NOT NULL,
                               PRIMARY KEY (`id`));";
-  
+
   $click_table_sql = "CREATE TABLE $click_table_name (
                               `id` INT NOT NULL AUTO_INCREMENT,
                               `adId` INT NOT NULL,
+                              `count` INT NOT NULL,
                               PRIMARY KEY (`id`));";
-  
+
   $impression_table_sql = "CREATE TABLE $impression_table_name (
                               `id` INT NOT NULL AUTO_INCREMENT,
                               `adId` INT NOT NULL,
+                              `count` INT NOT NULL,
                               PRIMARY KEY (`id`));";
-  
+
 
   require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
   dbDelta( $ad_table_sql );
@@ -89,5 +91,3 @@ add_action('admin_print_scripts', 'custom_js');
 
 //Functions
 include("functions.php");
-
-
