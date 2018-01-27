@@ -299,7 +299,7 @@ function monetize_shorcode($atts) {
 
   $zones = $wpdb->get_results( "SELECT * FROM $ad_table_name WHERE size='$size' AND countryId='$country'; "  );
   if(!$zones) {
-    $zones = $wpdb->get_results( "SELECT * FROM $ad_table_name WHERE countryId='default'; "  );
+    $zones = $wpdb->get_results( "SELECT * FROM $ad_table_name WHERE size='$size' AND countryId='default'; "  );
   }
 
   if($zones) {
@@ -312,9 +312,9 @@ function monetize_shorcode($atts) {
     }
 
     increase_zone_impression_count($zone->id);
-    echo "<a href='".$zone->link."' class='track-me' data-id='$zone->id' target='_blank'><img src='".$zone->banner."'/></a>";
+    return "<a href='".$zone->link."' class='track-me' data-id='$zone->id' target='_blank'><img src='".$zone->banner."'/></a>";
   } else {
-    echo "<!-- Cannot find any ad zones configured -->";
+    return "<!-- Cannot find any ad zones configured -->";
   }
 }
 add_shortcode( 'monetize', 'monetize_shorcode' );
