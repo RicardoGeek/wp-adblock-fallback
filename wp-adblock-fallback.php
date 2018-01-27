@@ -21,8 +21,7 @@ function register_data_tables() {
   global $wpdb;
   global $wp_adblock_fallback_version;
 
-  $ad_table_name = $wpdb->prefix."wp_ad";
-  $country_table_name = $wpdb->prefix."ad_country";
+  $ad_table_name = $wpdb->prefix."ad";
 	$click_table_name = $wpdb->prefix."click";
   $impression_table_name = $wpdb->prefix."impression";
 
@@ -49,7 +48,6 @@ function register_data_tables() {
 
   require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
   dbDelta( $ad_table_sql );
-  dbDelta( $country_table_sql );
 	dbDelta( $click_table_sql );
   dbDelta( $impression_table_sql );
   add_option( 'wp_adblock_fallback_version', $wp_adblock_fallback_version );
