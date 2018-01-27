@@ -1,4 +1,3 @@
-
 <?php
   /**
    * @package WP_AdBlock_Fallback
