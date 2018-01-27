@@ -214,7 +214,7 @@ function increase_zone_impression_count($zoneId) {
   $impression_table_name = $wpdb->prefix."impression";
   $adZone = $wpdb->get_results( "SELECT * FROM $impression_table_name WHERE id=$zoneId; "  );
   if($adZone) {
-    $wpdb->query( $wpdb->prepare(  "UPDATE $impression_table_name SET count = count + 1 WHERE id=%d",  array($zoneId) ) );
+    $wpdb->query( $wpdb->prepare(  "UPDATE $impression_table_name SET count = count + 1 WHERE adId=%d",  array($zoneId) ) );
   } else {
     $wpdb->query( $wpdb->prepare(  "INSERT INTO $impression_table_name (adId, count) VALUES (%d, %d)",  array($zoneId, 1) ) );
   }
@@ -356,9 +356,9 @@ function increase_click_count() {
   global $wpdb;
   $zoneId = $_POST['zoneId'];
   $click_table_name = $wpdb->prefix."click";
-  $adZone = $wpdb->get_results( "SELECT * FROM $click_table_name WHERE id=$zoneId; "  );
+  $adZone = $wpdb->get_results( "SELECT * FROM $click_table_name WHERE adId=$zoneId; "  );
   if($adZone) {
-    $wpdb->query( $wpdb->prepare(  "UPDATE $click_table_name SET count = count + 1 WHERE id=%d",  array($zoneId) ) );
+    $wpdb->query( $wpdb->prepare(  "UPDATE $click_table_name SET count = count + 1 WHERE adId=%d",  array($zoneId) ) );
   } else {
     $wpdb->query( $wpdb->prepare(  "INSERT INTO $click_table_name (adId, count) VALUES (%d, %d)",  array($zoneId, 1) ) );
   }

@@ -86,5 +86,10 @@ function custom_js() {
 }
 add_action('admin_print_scripts', 'custom_js');
 
+function track_js() {
+	wp_enqueue_script('track_js', plugins_url('js/track.js', __FILE__), array(), null, true );
+}
+add_action('wp_enqueue_scripts', 'track_js');
+
 //Functions
 include("functions.php");
