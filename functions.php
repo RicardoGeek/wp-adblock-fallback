@@ -204,9 +204,20 @@ function get_countries() {
 /* Functions */
 function get_ad_zones() {
   global $wpdb;
-  $ad_table_name = $wpdb->prefix."wp_ad";
+  $ad_table_name = $wpdb->prefix."ad";
   $zones = $wpdb->get_results( "SELECT * FROM $ad_table_name"  );
   return $zones;
+}
+
+function increase_zone_impression_count($zoneId) {
+  global $wpdb;
+  $impression_table_name = $wpdb->prefix."impression";
+  $adZone = $wpdb->get_results( "SELECT * FROM $impression_table_name WHERE id=$zoneId; "  );
+  if($adZone) {
+    $wpdb->query( $wpdb->prepare(  "UPDATE $impression_table_name SET count = count + 1 WHERE adId=%d",  array($zoneId) ) );
+  } else {
+    $wpdb->query( $wpdb->prepare(  "INSERT INTO $impression_table_name (adId, count) VALUES (%d, %d)",  array($zoneId, 1) ) );
+  }
 }
 
 /* Here is the magic sauce */
@@ -275,33 +286,36 @@ function detect_country($ip = NULL, $purpose = "location", $deep_detect = TRUE) 
     return $output;
 }
 
-
 function monetize_shorcode($atts) {
   global $wpdb;
-  
+
   $a = shortcode_atts( array(
 		'size' => '200x200',
 	), $atts );
-  $ad_table_name = $wpdb->prefix."wp_ad";
-  
+  $ad_table_name = $wpdb->prefix."ad";
+
   $size = $a['size'];
   $country = detect_country("Visitor", "Country");
-  
+
   $zones = $wpdb->get_results( "SELECT * FROM $ad_table_name WHERE size='$size' AND countryId='$country'; "  );
-  
-  $zones_count = count($zones);
- 
-  if($zones_count > 1) {
-    $keyZone = array_rand($zones, 1);
-    $zone = $zones[$keyZone];
-  } else {
-    $zone = $zones[0];
+  if(!$zones) {
+    $zones = $wpdb->get_results( "SELECT * FROM $ad_table_name WHERE countryId='default'; "  );
   }
-  
-  //TODO: Update the impression count for this ad
-  
-  echo "<a href='".$zone->link."' class='track-me'><img src='".$zone->banner."'/></a>";
-  
+
+  if($zones) {
+    $zones_count = count($zones);
+    if($zones_count > 1) {
+      $keyZone = array_rand($zones, 1);
+      $zone = $zones[$keyZone];
+    } else {
+      $zone = $zones[0];
+    }
+
+    increase_zone_impression_count($zone->id);
+    echo "<a href='".$zone->link."' class='track-me' data-id='$zone->id' target='_blank'><img src='".$zone->banner."'/></a>";
+  } else {
+    echo "<!-- Cannot find any ad zones configured -->";
+  }
 }
 add_shortcode( 'monetize', 'monetize_shorcode' );
 
@@ -309,16 +323,16 @@ add_shortcode( 'monetize', 'monetize_shorcode' );
 add_action('wp_ajax_create_new_zone', 'create_new_zone');
 function create_new_zone() {
   global $wpdb;
-  
-  $ad_table_name = $wpdb->prefix."wp_ad";
-  
+
+  $ad_table_name = $wpdb->prefix."ad";
+
   $country = $_POST['country'];
   $size = $_POST['size'];
   $banner = $_POST['banner'];
   $link = $_POST['link'];
-  
+
   $wpdb->query( $wpdb->prepare(  "INSERT INTO $ad_table_name (banner, link, size, countryId ) VALUES ( %s, %s, %s, %s )",  array($banner, $link, $size, $country) ) );
-  
+
   echo "Ad Zone Created";
   wp_die();
 }
@@ -326,12 +340,27 @@ function create_new_zone() {
 add_action('wp_ajax_delete_zone', 'delete_zone');
 function delete_zone() {
   global $wpdb;
-  
-  $ad_table_name = $wpdb->prefix."wp_ad";
+
+  $ad_table_name = $wpdb->prefix."ad";
   $id = $_POST['id'];
-  
+
   $wpdb->delete( $ad_table_name, array( 'id' => $id ) );
-  
+
   echo "Ad Zone Deleted!";
+  wp_die();
+}
+
+add_action('wp_ajax_increase_click_count', 'increase_click_count');
+add_action('wp_ajax_nopriv_increase_click_count', 'increase_click_count');
+function increase_click_count() {
+  global $wpdb;
+  $zoneId = $_POST['zoneId'];
+  $click_table_name = $wpdb->prefix."click";
+  $adZone = $wpdb->get_results( "SELECT * FROM $click_table_name WHERE adId=$zoneId; "  );
+  if($adZone) {
+    $wpdb->query( $wpdb->prepare(  "UPDATE $click_table_name SET count = count + 1 WHERE adId=%d",  array($zoneId) ) );
+  } else {
+    $wpdb->query( $wpdb->prepare(  "INSERT INTO $click_table_name (adId, count) VALUES (%d, %d)",  array($zoneId, 1) ) );
+  }
   wp_die();
 }

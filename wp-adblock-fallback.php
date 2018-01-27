@@ -1,4 +1,3 @@
-
 <?php
   /**
    * @package WP_AdBlock_Fallback
@@ -20,12 +19,11 @@ $wp_adblock_fallback_version = 1.1;
 function register_data_tables() {
   global $wpdb;
   global $wp_adblock_fallback_version;
-  
-  $ad_table_name = $wpdb->prefix."wp_ad";
-  $country_table_name = $wpdb->prefix."ad_country";
+
+  $ad_table_name = $wpdb->prefix."ad";
 	$click_table_name = $wpdb->prefix."click";
   $impression_table_name = $wpdb->prefix."impression";
-  
+
   $ad_table_sql = "CREATE TABLE $ad_table_name (
                               `id` INT NOT NULL AUTO_INCREMENT,
                               `banner` VARCHAR(500) NOT NULL,
@@ -33,21 +31,22 @@ function register_data_tables() {
                               `size` VARCHAR(45) NOT NULL,
                               `countryId` VARCHAR(45) NOT NULL,
                               PRIMARY KEY (`id`));";
-  
+
   $click_table_sql = "CREATE TABLE $click_table_name (
                               `id` INT NOT NULL AUTO_INCREMENT,
                               `adId` INT NOT NULL,
+                              `count` INT NOT NULL,
                               PRIMARY KEY (`id`));";
-  
+
   $impression_table_sql = "CREATE TABLE $impression_table_name (
                               `id` INT NOT NULL AUTO_INCREMENT,
                               `adId` INT NOT NULL,
+                              `count` INT NOT NULL,
                               PRIMARY KEY (`id`));";
-  
+
 
   require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
   dbDelta( $ad_table_sql );
-  dbDelta( $country_table_sql );
 	dbDelta( $click_table_sql );
   dbDelta( $impression_table_sql );
   add_option( 'wp_adblock_fallback_version', $wp_adblock_fallback_version );
@@ -87,7 +86,10 @@ function custom_js() {
 }
 add_action('admin_print_scripts', 'custom_js');
 
+function track_js() {
+	wp_enqueue_script('track_js', plugins_url('js/track.js', __FILE__), array(), null, true );
+}
+add_action('wp_enqueue_scripts', 'track_js');
+
 //Functions
 include("functions.php");
-
-
