@@ -37,8 +37,21 @@ jQuery(function() {
         alert(msg);
         window.location.reload();
       });
-
     }
+  });
+
+  jQuery(".btn-edit-zone").click(function() {
+    var dataId = jQuery(this).attr("data-id");
+    jQuery.ajax({
+      type: "post",
+      url: ajaxurl,
+      data: {
+        id: dataId,
+        action: 'get_zone'
+      }
+    }).done(function(msg) {
+      var zone = JSON.parse(msg);
+    });
   });
 
 });

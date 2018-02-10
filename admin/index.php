@@ -35,7 +35,14 @@
               <td><?php echo $zone->link ?></td>
               <td><?php echo $zone->countryId ?></td>
               <td><?php echo $zone->size ?></td>
-              <td> <button class="btn btn-danger btn-delete-zone" data-id="<?php echo $zone->id; ?>">Delete Zone</button></td>
+              <td>
+                <button class="btn btn-primary btn-sm btn-edit-zone" data-id="<?php echo $zone->id; ?>">
+                  <i class="fa fa-pencil" aria-hidden="true"></i>
+                </button>
+                <button class="btn btn-danger btn-sm btn-delete-zone" data-id="<?php echo $zone->id; ?>">
+                  <i class="fa fa-trash-o" aria-hidden="true"></i>
+                </button>
+              </td>
           </tr>
           <?php
         }

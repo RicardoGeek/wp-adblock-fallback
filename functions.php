@@ -350,6 +350,19 @@ function delete_zone() {
   wp_die();
 }
 
+add_action('wp_ajax_get_zone', 'get_zone');
+function get_zone() {
+    global $wpdb;
+    $ad_table_name = $wpdb->prefix."ad";
+
+    $id = $_POST['id'];
+
+    $zone = $wpdb->get_results( "SELECT * FROM $ad_table_name WHERE id = $id; "  );
+
+    echo json_encode($zone);
+    wp_die();
+}
+
 add_action('wp_ajax_increase_click_count', 'increase_click_count');
 add_action('wp_ajax_nopriv_increase_click_count', 'increase_click_count');
 function increase_click_count() {

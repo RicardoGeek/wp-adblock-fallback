@@ -77,6 +77,7 @@ function wp_adblock_fallback_options() {
 //CSS
 function custom_css() {
   wp_enqueue_style( 'customcss', plugins_url('css/wp-adblock-fallback.css', __FILE__) );
+  wp_enqueue_style( 'fontawesome', plugins_url('css/font-awesome.min.css', __FILE__) );
 }
 add_action( 'admin_print_styles', 'custom_css');
 
