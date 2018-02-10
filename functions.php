@@ -363,6 +363,34 @@ function get_zone() {
     wp_die();
 }
 
+add_action('wp_ajax_edit_zone', 'edit_zone');
+function edit_zone() {
+	global $wpdb;
+	$ad_table_name = $wpdb->prefix."ad";
+	
+	$dataId = $_POST['dataId'];
+	$countryId = $_POST['countryId'];
+	$size = $_POST['size'];
+	$banner = $_POST['banner'];
+	$link = $_POST['link'];
+	
+	$result = $wpdb->update(
+		$ad_table_name,
+		array(
+			"banner" => $banner,
+			"link" => $link,
+			"size" => $size,
+			"countryId" => $countryId
+		),
+		array(
+			"id" => $dataId
+		)
+	);
+	
+	echo $result;
+	wp_die();
+}
+
 add_action('wp_ajax_increase_click_count', 'increase_click_count');
 add_action('wp_ajax_nopriv_increase_click_count', 'increase_click_count');
 function increase_click_count() {
