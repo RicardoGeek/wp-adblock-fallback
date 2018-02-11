@@ -22,6 +22,8 @@
 					<th scope="col" id="Banner" class="manage-column">Banner</th>
 					<th scope="col" id="Link" class="manage-column">Link</th>
 					<th scope="col" id="country" class="manage-column">Country</th>
+					<th scope="col" id="country" class="manage-column">Impressions</th>
+					<th scope="col" id="country" class="manage-column">Clicks</th>
 					<th scope="col" id="Size" class="manage-column">Size</th>
 					<th scope="col" id="Size" class="manage-column">Action</th>
 				</tr>
@@ -42,6 +44,12 @@
 						</td>
 						<td>
 							<?php echo $zone->countryId ?>
+						</td>
+						<td>
+							<?php echo get_ad_impressions($zone->id);  ?>
+						</td>
+						<td>
+							<?php echo get_clicks($zone->id);  ?>
 						</td>
 						<td>
 							<?php echo $zone->size ?>

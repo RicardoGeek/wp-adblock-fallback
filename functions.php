@@ -220,6 +220,32 @@ function increase_zone_impression_count($zoneId) {
   }
 }
 
+function get_ad_impressions($zoneId) {
+	global $wpdb;
+	$impression_table_name = $wpdb->prefix."impression";
+	$adZoneCount = $wpdb->get_results( "SELECT count FROM $impression_table_name WHERE id=$zoneId; "  );
+	if(!$adZoneCount) {
+		$adZoneCount = 0;
+	} else {
+		$adZoneCount = $adZoneCount[0];
+		$adZoneCount = $adZoneCount->count;
+	}
+	return $adZoneCount;
+}
+
+function get_clicks($zoneId) {
+	global $wpdb;
+	$click_table_name = $wpdb->prefix."click";
+	$adZoneCount = $wpdb->get_results( "SELECT count FROM $click_table_name WHERE id=$zoneId; "  );
+	if(!$adZoneCount) {
+		$adZoneCount = 0;
+	} else {
+		$adZoneCount = $adZoneCount[0];
+		$adZoneCount = $adZoneCount->count;
+	}
+	return $adZoneCount;
+}
+
 /* Here is the magic sauce */
 function detect_country($ip = NULL, $purpose = "location", $deep_detect = TRUE) {
     $output = NULL;
