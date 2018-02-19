@@ -357,9 +357,37 @@ function create_new_zone() {
   $banner = $_POST['banner'];
   $link = $_POST['link'];
 
-  $wpdb->query( $wpdb->prepare(  "INSERT INTO $ad_table_name (banner, link, size, countryId ) VALUES ( %s, %s, %s, %s )",  array($banner, $link, $size, $country) ) );
+	$errors = "";
+	if(empty($country)) {
+		$errors .= "<li>Country Is Required</li>";
+	}
+	
+	if(empty($size)) {
+		$errors .= "<li>Size is required</li>";
+	} else if(	!preg_match("/\d+x\d+/", $size) ) {
+		$errors .= "<li>Size should have a <width>x<height> format. (e.g: 300x250) </li>";
+	}
+	
+	if(empty($banner)) {
+		$errors .= "<li>Banner link is required</li>";
+	} else if( ! filter_var($banner, FILTER_VALIDATE_URL) ) {
+		$errors .= "<li>Link to banner should have a valid url format.</li>";
+	}
+	
+	if(empty($link)) {
+		$errors .= "<li>A link to the offer is required</li>";
+	} else if( ! filter_var($link, FILTER_VALIDATE_URL) ) {
+		$errors .= "<li>Link to offer should have a valid url format.</li>";
+	}
 
-  echo "Ad Zone Created";
+	if(empty($errors)) {
+		$wpdb->query( $wpdb->prepare(  "INSERT INTO $ad_table_name (banner, link, size, countryId ) VALUES ( %s, %s, %s, %s )",  array($banner, $link, $size, $country) ) );
+		$result = array("status" => "ok", "msg" => "Ad Zone Created");
+	} else {
+		$result = array("status" => "error", "msg" => "<ul>$errors</ul>");
+	}
+
+  echo json_encode($result);
   wp_die();
 }
 

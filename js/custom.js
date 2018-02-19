@@ -15,7 +15,9 @@ jQuery(function() {
     var size = jQuery("#ad-size").val();
     var banner = jQuery("#ad-banner-link").val();
     var link = jQuery("#ad-link").val();
-
+    
+    jQuery("#errors").html("");
+    
     jQuery.ajax({
       type: "post",
       url: ajaxurl,
@@ -27,8 +29,12 @@ jQuery(function() {
         action: 'create_new_zone'
       }
     }).done(function(msg) {
-      alert(msg);
-      window.location.reload();
+      var obj = JSON.parse(msg);
+      if(obj.status == "ok") {
+        window.location.reload(true);  
+      } else {
+        jQuery("#errors").html(obj.msg);
+      }
     });
   });
 

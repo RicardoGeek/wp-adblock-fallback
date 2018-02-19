@@ -6,6 +6,9 @@
   <h1 class="wp-heading-inline">New Ad Zone</h1>  
   <hr class="wp-header-end">
   <div class="card">
+    <div id="errors" style="color:red;">
+      
+    </div>
     <div class="form-group">
       Target Country:<br/><br/>
       <select id="ad-country-select" class="form-control">
