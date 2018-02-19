@@ -80,12 +80,14 @@ function custom_css() {
   wp_enqueue_style( 'fontawesome', plugins_url('css/font-awesome.min.css', __FILE__) );
 	wp_enqueue_style( 'remodal', plugins_url('css/remodal.css', __FILE__) );
 	wp_enqueue_style( 'remodal-theme', plugins_url('css/remodal-default-theme.css', __FILE__) );
+	wp_enqueue_style( 'dynatable', plugins_url('css/jquery.dynatable.css', __FILE__) );
 }
 add_action( 'admin_print_styles', 'custom_css');
 
 //JS
 function custom_js() {
 	wp_enqueue_script( 'remodal', plugins_url('js/remodal.min.js', __FILE__) );
+	wp_enqueue_script( 'dynatable', plugins_url('js/jquery.dynatable.js', __FILE__) );
   wp_enqueue_script( 'customjs', plugins_url('js/custom.js', __FILE__) );
 }
 add_action('admin_print_scripts', 'custom_js');

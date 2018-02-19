@@ -1,4 +1,10 @@
 jQuery(function() {
+  
+  jQuery("#zones-table").dynatable({
+    params: {
+      page: 'dtPage'
+    }
+  });
 
   jQuery("#save-ad-zone").click(function() {
     var country = jQuery("#ad-country-select").val();

@@ -9,26 +9,26 @@
 		<hr class="wp-header-end">
 		<br/>
 		<code>
-    Remember:<br/>
-    in code: do_shortcode('[monetize size="200x200"]');<br/>
-    in post: [monetize size="200x200"]<br/>
-    Where 200x200 is the size<br/>
-  </code>
-		<br/>
-		<table class="wp-list-table widefat fixed striped posts">
+    	Remember:<br/>
+    	in code: do_shortcode('[monetize size="200x200"]');<br/>
+    	in post: [monetize size="200x200"]<br/>
+    	Where 200x200 is the size
+  	</code>
+		<br/><br/>
+		<table class="wp-list-table widefat fixed striped posts" id="zones-table">
 			<thead>
 				<tr>
-					<th scope="col" id="id" class="manage-column">ID</th>
-					<th scope="col" id="Banner" class="manage-column">Banner</th>
-					<th scope="col" id="Link" class="manage-column">Link</th>
-					<th scope="col" id="country" class="manage-column">Country</th>
-					<th scope="col" id="country" class="manage-column">Impressions</th>
-					<th scope="col" id="country" class="manage-column">Clicks</th>
-					<th scope="col" id="Size" class="manage-column">Size</th>
-					<th scope="col" id="Size" class="manage-column">Action</th>
+					<th>ID</th>
+					<th>Banner</th>
+					<th>Link</th>
+					<th>Country</th>
+					<th>Impressions</th>
+					<th>Clicks</th>
+					<th>Size</th>
+					<th>Action</th>
 				</tr>
 			</thead>
-			<tbody id="the-list">
+			<tbody>
 				<?php
         foreach($zones as $zone) {
           ?>
