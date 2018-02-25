@@ -44,7 +44,8 @@ jQuery(function() {
     var size = jQuery("#edit-ad-size").val();
     var banner = jQuery("#edit-ad-banner-link").val();
     var link = jQuery("#edit-ad-link").val();
-
+    jQuery("#errors").html("");
+    
     jQuery.ajax({
       type: "post",
       url: ajaxurl,
@@ -58,10 +59,10 @@ jQuery(function() {
       }
     }).done(function(msg) {
       var obj = JSON.parse(msg);
-      if (obj === 1) {
-        var me = window.location.href;
-        me = me.split("#");
-        window.location.href = me[0];
+      if(obj.status == "ok") {
+        window.location.reload(true);  
+      } else {
+        jQuery("#errors").html(obj.msg);
       }
     });
   });

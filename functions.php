@@ -408,9 +408,7 @@ add_action('wp_ajax_get_zone', 'get_zone');
 function get_zone() {
     global $wpdb;
     $ad_table_name = $wpdb->prefix."ad";
-
     $id = $_POST['id'];
-
     $zone = $wpdb->get_results( "SELECT * FROM $ad_table_name WHERE id = $id; "  );
 
     echo json_encode($zone);
@@ -428,20 +426,50 @@ function edit_zone() {
 	$banner = $_POST['banner'];
 	$link = $_POST['link'];
 	
-	$result = $wpdb->update(
-		$ad_table_name,
-		array(
-			"banner" => $banner,
-			"link" => $link,
-			"size" => $size,
-			"countryId" => $countryId
-		),
-		array(
-			"id" => $dataId
-		)
-	);
+	$errors = "";
+	if(empty($countryId)) {
+		$errors .= "<li>Country Is Required</li>";
+	}
 	
-	echo $result;
+	if(empty($size)) {
+		$errors .= "<li>Size is required</li>";
+	} else if(	!preg_match("/\d+x\d+/", $size) ) {
+		$errors .= "<li>Size should have a <width>x<height> format. (e.g: 300x250) </li>";
+	}
+	
+	if(empty($banner)) {
+		$errors .= "<li>Banner link is required</li>";
+	} else if( ! filter_var($banner, FILTER_VALIDATE_URL) ) {
+		$errors .= "<li>Link to banner should have a valid url format.</li>";
+	}
+	
+	if(empty($link)) {
+		$errors .= "<li>A link to the offer is required</li>";
+	} else if( ! filter_var($link, FILTER_VALIDATE_URL) ) {
+		$errors .= "<li>Link to offer should have a valid url format.</li>";
+	}
+	
+	if(empty($errors)) {
+		$result = $wpdb->update(
+			$ad_table_name,
+			array(
+				"banner" => $banner,
+				"link" => $link,
+				"size" => $size,
+				"countryId" => $countryId
+			),
+			array(
+				"id" => $dataId
+			)
+		);
+		
+		$result = array("status" => "ok", "result" => $result);
+		echo json_encode($result);
+	} else {
+		$result = array("status" => "error", "msg" => "<ul>$errors</ul>");
+		echo json_encode($result);
+	}
+	
 	wp_die();
 }
 

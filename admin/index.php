@@ -73,6 +73,7 @@
 		<div class="remodal" data-remodal-id="modal">
 			<button data-remodal-action="close" class="remodal-close"></button>
 			<input type="hidden" id="edit-zone-id" />
+			<div id="errors" style="color:red;"></div>
 			<div class="form-group">
 				Target Country:<br/><br/>
 				<select id="edit-ad-country-select" class="form-control">
