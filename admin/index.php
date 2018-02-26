@@ -58,7 +58,7 @@
 							<button data-remodal-target="modal" class="btn btn-primary btn-sm btn-edit-zone" data-id="<?php echo $zone->id; ?>">
                   <i class="fa fa-pencil" aria-hidden="true"></i>
                 </button>
-							<button class="btn btn-danger btn-sm" data-id="<?php echo $zone->id; ?>">
+							<button class="btn btn-danger btn-sm btn-delete-zone" data-id="<?php echo $zone->id; ?>">
                   <i class="fa fa-trash-o" aria-hidden="true"></i>
                 </button>
 						</td>
